@@ -8,7 +8,9 @@ class Api {
     constructor() {
         this.resourceDir = path.join(__dirname, 'static')
         this.app = express()
-        this.app.use(express.static(path.join(__dirname, 'static')))
+        this.app.use(express.static(path.join(__dirname, 'static'), {
+            fallthrough: false
+        }))
         this.app.use(require('body-parser').raw())
         this.app.post('/*', this.save(this))
         this.app.put('/*', this.modify(this))
@@ -16,9 +18,8 @@ class Api {
         this.app.use((req, resp) => {
         })
         this.app.use((err, req, resp, next) => {
-            resp.sendStatus(500)
-            console.log(err.message)
-            this.error('operation failed', { url, method: req.method, err })
+            resp.sendStatus(err && err.status || 500)
+            this.error('operation failed', { url: req.url, method: req.method, err })
         })
         this.app.listen(1001)
     }
@@ -26,7 +27,6 @@ class Api {
     save(self) {
         return (req, resp, next) => {
             try {
-                console.log(req.body)
                 let url = path.join(self.resourceDir, req.url)
                 if (fs.existsSync(url)) {
                     this.debug('save failed because existed', { url })
@@ -93,9 +93,16 @@ class Api {
         console.error(desc, data)
     }
 }
-
-global.console = Logger
-
-new Api()
+new class extends Api {
+    debug(desc, data) {
+        Logger.debug(desc, data)
+    }
+    info(desc, data) {
+        Logger.info(desc, data)
+    }
+    error(desc, data) {
+        Logger.error(desc, data)
+    }
+}()
 
 WebLogger.info('Api启动成功')

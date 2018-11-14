@@ -8,15 +8,13 @@ class Api {
     constructor() {
         this.resourceDir = path.join(__dirname, 'static')
         this.app = express()
-        this.app.use(express.static(path.join(__dirname, 'static'), {
-            fallthrough: false
-        }))
         this.app.use(require('body-parser').raw())
         this.app.post('/*', this.save(this))
         this.app.put('/*', this.modify(this))
         this.app.delete('/*', this.delete(this))
-        this.app.use((req, resp) => {
-        })
+        this.app.use(express.static(path.join(__dirname, 'static'), {
+            fallthrough: false
+        }))
         this.app.use((err, req, resp, next) => {
             resp.sendStatus(err && err.status || 500)
             this.error('operation failed', { url: req.url, method: req.method, err })

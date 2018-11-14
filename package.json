@@ -1,0 +1,24 @@
+{
+  "name": "igno-srm",
+  "version": "1.0.0",
+  "description": "Ignorant static resource manager, to save/get/delete/override resource by api.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eriasuitor/igno-srm.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eriasuitor/igno-srm/issues"
+  },
+  "homepage": "https://github.com/Eriasuitor/igno-srm#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "log4js": "^3.0.6"
+  }
+}

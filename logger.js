@@ -5,13 +5,13 @@ Log4js.configure({
     appenders: {
         runtime: {
             type: 'dateFile',
-            filename: path.join(__dirname, '/log/runtime'),
+            filename: path.join(__dirname, '/logs/runtime'),
             pattern: '/yyyy-MM-dd.log',
             alwaysIncludePattern: true
         },
         web: {
             type: 'dateFile',
-            filename: path.join(__dirname, '/log/web'),
+            filename: path.join(__dirname, '/logs/web'),
             pattern: '/yyyy-MM-dd.log',
             alwaysIncludePattern: true
         }

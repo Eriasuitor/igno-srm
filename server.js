@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const fs = require('fs')
+const mkdirp = require('mkdirp')
 
 Object.assign(global, require('./logger'))
 
@@ -8,9 +9,19 @@ class Api {
     constructor() {
         this.resourceDir = path.join(__dirname, 'static')
         this.app = express()
-        this.app.use(require('body-parser').raw({
-            type: req => req.headers["content-type"]
-        }))
+        // this.app.use(require('body-parser').raw({
+        //     type: req => req.headers["content-type"]
+        // }))
+        // this.app.use((req, resp, next) => {
+        //     req.body = []
+        //     req.on('data', chunk => {
+        //         req.body.push(chunk)
+        //     })
+        //     req.on('end', () => {
+        //         req.body = Buffer.concat(req.body)
+        //         next()
+        //     })
+        // })
         this.app.post('/*', this.save(this))
         this.app.put('/*', this.modify(this))
         this.app.delete('/*', this.delete(this))
@@ -32,15 +43,13 @@ class Api {
                     this.debug('save failed because existed', { url })
                     return resp.sendStatus(409)
                 }
-                let urlList = req.url.split('/')
-                urlList.slice(1, urlList.length - 1).reduce((a, b) => {
-                    let currentPath = path.join(a, b)
-                    if (!fs.existsSync(currentPath)) fs.mkdirSync(currentPath)
-                    return currentPath
-                }, self.resourceDir)
-                fs.writeFileSync(url, req.body)
-                this.info('save success', { url })
-                resp.sendStatus(200)
+                mkdirp.sync(url.substring(0, url.length - 1))
+                req.on('end', err => {
+                    if (err) return next(err)
+                    this.info('save success', { url })
+                    resp.sendStatus(200)
+                })
+                req.pipe(fs.createWriteStream(url))
             } catch (err) {
                 next(err)
             }
@@ -55,9 +64,12 @@ class Api {
                     this.debug('modify failed because not existed', { url })
                     return resp.sendStatus(404)
                 }
-                fs.writeFileSync(url, req.body)
-                this.info('modify success', { url })
-                resp.sendStatus(200)
+                req.on('end', err => {
+                    if (err) return next(err)
+                    this.info('modify success', { url })
+                    resp.sendStatus(200)
+                })
+                req.pipe(fs.createWriteStream(url))
             } catch (err) {
                 next(err)
             }

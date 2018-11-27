@@ -62,3 +62,5 @@ typings/
 
 #static
 static/
+
+package-lock.json*

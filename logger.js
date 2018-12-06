@@ -3,12 +3,6 @@ const path = require('path')
 
 Log4js.configure({
     appenders: {
-        runtime: {
-            type: 'dateFile',
-            filename: path.join(__dirname, '/logs/runtime'),
-            pattern: '/yyyy-MM-dd.log',
-            alwaysIncludePattern: true
-        },
         web: {
             type: 'dateFile',
             filename: path.join(__dirname, '/logs/web'),
@@ -17,12 +11,8 @@ Log4js.configure({
         }
     },
     categories: {
-        default: { appenders: ['runtime'], level: 'ALL' },
-        web: { appenders: ['web'], level: 'ALL' },
+        default: { appenders: ['web'], level: 'ALL' },
     }
 })
 
-module.exports = {
-    Logger: Log4js.getLogger('default'),
-    WebLogger: Log4js.getLogger('web')
-}
+module.exports = Log4js.getLogger('default')

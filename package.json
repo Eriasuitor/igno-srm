@@ -4,7 +4,8 @@
   "description": "Ignorant static resource manager, to save/get/delete/override resource by api.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "start": "pm2 start index.js -n srm --max-restarts 0"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,9 @@
     "express": "^4.16.4",
     "log4js": "^3.0.6",
     "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
   }
 }
